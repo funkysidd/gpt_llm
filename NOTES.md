@@ -27,11 +27,16 @@ The replacement is necessary because in its absence we will get teh text
 * The function `binary_cross_entropy` returns a scalar.  It is used to compare    
   `input` probabilities (in the range [0, 1]) to `target` class labels (either
    0 or 1).
-* A linear regression is represented by $`y = w*x + b`$
+* A linear regression is represented by $`y = w*x + b`$, where `w` is weight and
+   `b` is bias.
+    ** The snippet below shows some examples,
     ```
     w*x -> [128, 784] * [784, 1] -> [128, 1]
     w*x -> [64, 128]  * [128, 1] -> [64,  1]
     ```
-    The thing to keep in mind is that we are multiplying `w` with the incoming vector `x`, not the other way around.
-    The first dimension of the weight vector represents the number of nodes in the next layer of the NN.
-    The second dimension of the weight vector represents the dimension of the input vector.
+    ** The thing to keep in mind is that we are multiplying `w` with the incoming
+    vector `x`, not the other way around.
+    ** The first dimension of the weight vector represents the number of nodes in
+    the next layer of the NN.
+    ** The second dimension of the weight vector represents the dimension of the
+    input vector.
