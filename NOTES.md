@@ -20,19 +20,20 @@ The replacement is necessary because in its absence we will get teh text
 ## Deep Learning
 
 * Sigmoid is represented as $`f(x)=1/(1+\exp(-x))`$, which is the same as
-  $`f(x)=\exp(x)/(1+\exp(x))`$. As x approaches infinity, `f(x)` approaches 1.
-  `1` can be replaced by any other positive value, say `L`, which then becomes
-  the upper limit. The range of the sigmoid function is `[0, 1]` or `[0, L]`,
-  and the midpoint is `0.5`.
+$`f(x)=\exp(x)/(1+\exp(x))`$. As x approaches infinity, `f(x)` approaches 1.
+`1` can be replaced by any other positive value, say `L`, which then becomes
+the upper limit. The range of the sigmoid function is `[0, 1]` or `[0, L]`,
+and the midpoint is `0.5`.
+* ReLU, rectified linear unit, is represented as `max(0, x)`.
 * The function `binary_cross_entropy` returns a scalar.  It is used to compare    
-  `input` probabilities (in the range [0, 1]) to `target` class labels (either
-   0 or 1).
+`input` probabilities (in the range [0, 1]) to `target` class labels (either
+  0 or 1).
 * A linear regression is represented by $`y = w*x + b`$, where `w` is weight and
-  `b` is bias. The snippet below shows some examples,
-  ```
-  w*x -> [128, 784] * [784, 1] -> [128, 1]
-  w*x -> [64, 128] * [128, 1] -> [64, 1]
-  ```
+`b` is bias. The snippet below shows some examples,
+```
+w*x -> [128, 784] * [784, 1] -> [128, 1]
+w*x -> [64, 128] * [128, 1] -> [64, 1]
+```
   * The thing to keep in mind is that we are multiplying `w` with the incoming
   vector `x`, not the other way around.
   * The first dimension of the weight vector represents the number of nodes in
