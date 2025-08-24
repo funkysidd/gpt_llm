@@ -43,6 +43,7 @@ if __name__ == '__main__':
 
     # No need to store gradients, as we are not doing back-propogation yet.
     with torch.no_grad():
-        Y = torch.softmax(model.forward(X), dim=1)
+        Y_raw = model.forward(X)
+        Y_scaled = torch.softmax(Y_raw, dim=1)
     
-    print(f'Y: {Y}')
+    print(f'Y_raw: {Y_raw}, Y_scaled: {Y_scaled}')
