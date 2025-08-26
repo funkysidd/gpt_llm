@@ -47,8 +47,6 @@ if __name__ == '__main__':
 
     Logging.log(LogLevel.VERBOSE, f"Number of trainable params: {model.get_trainable_param_count()}")
 
-    model.train()
-
     num_epochs = 3
     for epoch in range(3):
         # Invoked every epoch
