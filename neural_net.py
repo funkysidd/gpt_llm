@@ -10,12 +10,15 @@ class NeuralNetwork(torch.nn.Module):
             torch.nn.ReLU(), # activation unit
             torch.nn.Linear(30, 20),
             torch.nn.ReLU(),
-            torch.nn.Linear(20, output_features) 
+            torch.nn.Linear(20, output_features)
         )
 
     def forward(self, x):
         logits = self.layers(x)
         return logits
+
+    def get_trainable_param_count(self) -> int:
+        return sum(param.numel() for param in self.parameters() if param.requires_grad)
 
 if __name__ == '__main__':
     torch.manual_seed(123)
@@ -39,11 +42,11 @@ if __name__ == '__main__':
     weight and A^T is transpose. This is opposed to `y = Ax + b`.
     Hence, `X` is a 1x50 matrix, as opposed to 50x1.
     '''
-    X = torch.rand(1, 50) 
+    X = torch.rand(1, 50)
 
     # No need to store gradients, as we are not doing back-propogation yet.
     with torch.no_grad():
         Y_raw = model.forward(X)
         Y_scaled = torch.softmax(Y_raw, dim=1)
-    
+
     print(f'Y_raw: {Y_raw}, Y_scaled: {Y_scaled}')
