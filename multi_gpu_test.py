@@ -9,7 +9,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 
 from neural_net import NeuralNetwork
-from neural_net_utils import compute_accuracy
+from neural_net_utils import compute_accuracy, compute_accuracy_gpu
 from dataset import SampleDataset
 from logger import Logging, LogLevel
 
@@ -49,12 +49,16 @@ def prepare_dataset():
 
 # Code executed per process, each of which executes the model on the device (GPU)
 def main(rank, world_size, num_epochs):
+    # Given this is a new process, logging needs to be initialized again.
+    Logging.set_log_level(LogLevel.INFO)
+
     ddp_setup(rank, world_size)
     train_loader, test_loader = prepare_dataset()
-    model = NeuralNetwork(num_inputs=2, num_outputs=2)
+    model = NeuralNetwork(input_features=2, output_features=2)
     model.to(rank) # Model is transfered to the device
     optimizer = torch.optim.SGD(model.parameters(), lr=0.5)
     model = DDP(model, device_ids=[rank])
+    Logging.log(LogLevel.INFO, f'[GPU {rank}] About to begin training...')
     for epoch in range(num_epochs):
         train_loader.sampler.set_epoch(epoch)
         model.train()
@@ -78,8 +82,8 @@ def main(rank, world_size, num_epochs):
                         len(train_loader),
                         loss))
 
-    Logging.log(LogLevel.INFO, f'[GPU {rank}] Accuracy (training): {compute_accuracy(model, train_loader)}')
-    Logging.log(LogLevel.INFO, f'[GPU {rank}] Accuracy (testing): {compute_accuracy(model, test_loader)}')
+    Logging.log(LogLevel.INFO, f'[GPU {rank}] Accuracy (training): {compute_accuracy_gpu(rank, model, train_loader)}')
+    Logging.log(LogLevel.INFO, f'[GPU {rank}] Accuracy (testing): {compute_accuracy_gpu(rank, model, test_loader)}')
 
     destroy_process_group()
 
@@ -92,5 +96,6 @@ if __name__ == "__main__":
         num_epochs = 3
         world_size = torch.cuda.device_count()
         mp.spawn(main, args=(world_size, num_epochs), nprocs=world_size)
+        Logging.log(LogLevel.INFO, f'Done...')
     else:
         Logging.log(LogLevel.ERROR, 'Cuda is not available, exiting!')
