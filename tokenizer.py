@@ -3,7 +3,7 @@ import re
 split_separators = r'([,.:;?_!"()\']|--|\s)'
 
 class Vocabulary:
-    def __init__(self, filepath):
+    def __init__(self, filepath:str):
         self.filepath = filepath
         self.str_to_int = {}
         self.generate()
@@ -37,7 +37,7 @@ class Tokenizer:
     def decode(self, ids):
         text = ' '.join([self.int_to_str[item] if item in self.int_to_str else self.unknown_token[1] for item in ids])
         print(f'Joined  string (round 0): {text}')
-        text = re.sub(r'\s+([,.:;?!"()\'])', r'\1', text) # Subset of punctuations 
+        text = re.sub(r'\s+([,.:;?!"()\'])', r'\1', text) # Subset of punctuations
         print(f'Decoded string (round 1): {text}')
         text = re.sub(r'^(["])\s+', r'\1', text) # Replaces ` "` at the beginning of text with `"`.
         return text
