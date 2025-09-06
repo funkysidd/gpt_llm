@@ -63,7 +63,7 @@ class DeepNeuralNetwork():
             Z2/A3: 64x1
             Z3/A3: 10x1
 
-            Hideen layers use sigmoid for activation, whereas the output layer uses softmax.
+            Hidden layers use sigmoid for activation, whereas the output layer uses softmax.
         '''
 
         # input layer activations becomes sample
@@ -92,9 +92,9 @@ class DeepNeuralNetwork():
             This is the backpropagation algorithm, for calculating the updates
             of the neural network's parameters.
 
-            Note: There is a stability issue that causes warnings. This is 
+            Note: There is a stability issue that causes warnings. This is
                   caused  by the dot and multiply operations on the huge arrays.
-                  
+
                   RuntimeWarning: invalid value encountered in true_divide
                   RuntimeWarning: overflow encountered in exp
                   RuntimeWarning: overflow encountered in square
@@ -120,7 +120,7 @@ class DeepNeuralNetwork():
             - Deriatives are enabled during backpropogation
             - error (incoming): 10x1
             - params['W3'].T: 64x10
-            - params['W3'].T x error: 64x1 
+            - params['W3'].T x error: 64x1
             - error (outgoing): 64x1
             - params['A1']: 128x1
             - change_w['W2']: np.outer(error, params['A1']): np.outer(64x1, 128x1) -> 64x128
@@ -133,7 +133,7 @@ class DeepNeuralNetwork():
             - Deriatives are enabled during backpropogation
             - error (incoming): 64x1
             - params['W2'].T: 128x64
-            - params['W3'].T x error: 128x1 
+            - params['W3'].T x error: 128x1
             - error (outgoing): 128x1
             - params['A0']: 784x1
             - change_w['W1']: np.outer(error, params['A0']): np.outer(128x1, 784x1) -> 128x784
@@ -151,13 +151,13 @@ class DeepNeuralNetwork():
             Update network parameters according to update rule from
             Stochastic Gradient Descent.
 
-            θ = θ - η * ∇J(x, y), 
+            θ = θ - η * ∇J(x, y),
                 theta θ:            a network parameter (e.g. a weight w)
                 eta η:              the learning rate
                 gradient ∇J(x, y):  the gradient of the objective function,
                                     i.e. the change for a specific theta θ
         '''
-        
+
         for key, value in self.params['change_w'].items():
             self.params[key] -= self.l_rate * value # The gradient of the descent function is 1?
 
@@ -179,7 +179,7 @@ class DeepNeuralNetwork():
             predictions.append(pred == np.argmax(y))
 
         # print(f"Ending computation of accuracy...")
-        
+
         return np.mean(np.array(predictions))
 
     def train(self, x_train, y_train, x_val, y_val):
@@ -190,7 +190,7 @@ class DeepNeuralNetwork():
                 # changes_to_w = self.backward_pass(y, output)
                 self.backward_pass(y, output)
                 self.update_network_parameters()
-            
+
             accuracy = self.compute_accuracy(x_val, y_val)
             print('Epoch: {0}, Time Spent: {1:.2f}s, Accuracy: {2:.2f}%'.format(
                 iteration+1, time.time() - start_time, accuracy * 100
