@@ -22,7 +22,11 @@
 * The function `binary_cross_entropy` returns a scalar.  It is used to compare `input` probabilities (in the range [0,
   1]) to `target` class labels (either 0 or 1).
 * A linear regression is represented by $`y = w*x + b`$, where `w` is weight and `b` is bias. The snippet below shows
-  some examples, ``` w*x -> [128, 784] * [784, 1] -> [128, 1] w*x -> [64, 128] * [128, 1] -> [64, 1] ```
+  some examples,
+    ```
+    w*x -> [128, 784] * [784, 1] -> [128, 1]
+    w*x -> [64, 128] * [128, 1] -> [64, 1]
+    ```
   * The thing to keep in mind is that we are multiplying `w` with the incoming vector `x`, not the other way around.
   * The first dimension of the weight vector represents the number of nodes in the next layer of the neural network.
   * The second dimension of the weight vector represents the dimension of the input vector.
@@ -51,7 +55,7 @@
       * https://www.ibm.com/think/topics/recurrent-neural-networks
       * https://medium.com/analytics-vidhya/encoders-decoders-sequence-to-sequence-architecture-5644efbb3392
   * Self attention:
-    * Decoder only transformer
+    * Employs a decoder only transformer
     * Attention weights
       * For a given input sequence, the attention weights for a specific token involves computing the similarity with
         all other tokens. The similarity is computed as dot product of token embeddings, i.e., for token 1, its
@@ -60,8 +64,11 @@
       * The tensor is further normalized, i.e., ``` softmax(attention_weight_token_1) ```
       * The components of the normalized tensor add up to 1.
       * The context vector for token 1 is then computed by multiplying the asociated attention weights with the
-        corresponding token embeddings and summing them up.  ``` context_vector_token_1 = attention_weight_token_1[0] *
-        token_e_0 + attention_weight_token_1[1] * token_e_0 + ...  attention_weight_token_1[n] * token_e_n ```
+        corresponding token embeddings and summing them up.
+        ```
+        context_vector_token_1 = attention_weight_token_1[0] * token_e_0 + attention_weight_token_1[1] * token_e_0 + ...
+        + attention_weight_token_1[n] * token_e_n
+        ```
     * Transforming a `m` dimensional vector to `n` dimensions requires multliplication with a `m x n` matrix.
       * A vector, in PyTorch parlance, is represented as  list of numbers, i.e, vec = [x, y, z, ...]. It only has one
         dimension, i.e., the number of elements in the list.
