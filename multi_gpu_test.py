@@ -42,8 +42,10 @@ def prepare_dataset():
     train_ds = SampleDataset(X_train, y_train)
     test_ds = SampleDataset(X_test, y_test)
 
-    train_loader = DataLoader(dataset=train_ds, batch_size=2, shuffle=False, pin_memory=True, drop_last=True, sampler=DistributedSampler(train_ds))
-    test_loader = DataLoader(dataset=test_ds, batch_size=2, shuffle=False, pin_memory=True, drop_last=True, sampler=DistributedSampler(test_ds))
+    train_loader = DataLoader(dataset=train_ds, batch_size=2, shuffle=False, pin_memory=True, drop_last=True,
+                              sampler=DistributedSampler(train_ds))
+    test_loader = DataLoader(dataset=test_ds, batch_size=2, shuffle=False, pin_memory=True, drop_last=True,
+                             sampler=DistributedSampler(test_ds))
 
     return train_loader, test_loader
 

@@ -75,5 +75,5 @@
       * Transforming a vector is achieved as,
         * x' = x * T, where T is a `m x n` sized matrix, or
         * x' = transpose(T) * x, where transpose(T) is a `n x m` sized matrix.
-        * Essentially, the act of transformation can ve viewed as trnasforming "every" component of the incoming vector
+        * Essentially, the act of transformation can ve viewed as transforming "every" component of the incoming vector
           weighed differently to compute the components in the new outgoing vector.
