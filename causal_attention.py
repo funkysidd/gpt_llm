@@ -17,8 +17,7 @@ class CausalAttention(torch.nn.Module):
         # Registering a buffer with a module causes it to move it the GPU too, when the model iteself is moved.
         self.register_buffer(
            'mask',
-           torch.triu(torch.ones(context_length, context_length, dtype=bool),
-           diagonal=1)
+           torch.triu(torch.ones(context_length, context_length, dtype=bool), diagonal=1)
         )
 
     def forward(self, x):
@@ -47,6 +46,7 @@ class CausalAttention(torch.nn.Module):
 
 if __name__ == '__main__':
     torch.manual_seed(123)
+    Logging.set_log_level(LogLevel.INFO)
 
     # Token embeddings; made up.
     inputs = torch.tensor(
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     )
 
     batch = torch.stack((inputs, inputs), dim=0)
-    ca = CausalAttention(inputs.shape[1], 2, inputs.shape[0], 0.0)
-    context_vec = ca(batch)
+    ca = CausalAttention(inputs.shape[1], 2, batch.shape[1], 0.0)
+    context_vectors = ca(batch)
 
-    print(context_vec)
+    Logging.log(LogLevel.INFO, f'context_vectors: {context_vectors}')
