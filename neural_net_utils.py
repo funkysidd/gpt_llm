@@ -9,6 +9,9 @@ def compute_accuracy(model:torch.nn.Module, dataloader:torch.utils.data.DataLoad
         with torch.no_grad():
             logits = model(features)
 
+        # logits contains an entry for every dimension in the input. argmax returns the index associated with the max
+        # element in logits. In the case of two dimensions (or classes), this returns 0 or 1. The labels array contains
+        # one class each for every input, which is why we compare labels with predictions.
         predictions = torch.argmax(logits, dim=1)
         compare = labels == predictions
         correct += torch.sum(compare)
