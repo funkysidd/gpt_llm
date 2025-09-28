@@ -44,6 +44,9 @@ class MultiHeadAttention(torch.nn.Module):
         queries = queries.transpose(1, 2)
         values = values.transpose(1, 2)
 
+        # The underlying computation of attention_scores and attention_weights can happen per-head, in parallel. Tha is
+        # what multi-head attention really buys.
+
         # In causal_atention, this was (1, 2); since there is an additional dimension here, that changed to (2, 3).
         attention_scores = queries @ keys.transpose(2, 3)
         attention_scores.masked_fill_(self.mask, -torch.inf)

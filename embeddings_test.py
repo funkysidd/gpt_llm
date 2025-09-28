@@ -29,7 +29,7 @@ if __name__ == '__main__':
     token_embeddings_layer = torch.nn.Embedding(num_embeddings=max_tokens, embedding_dim=256)
 
     # The weights associated with the embedding layer requires gradient
-    Logging.log(LogLevel.INFO, token_embeddings_layer.weight.requires_grad) # Evaluates to true
+    # Logging.log(LogLevel.INFO, token_embeddings_layer.weight.requires_grad) # Evaluates to true
 
     # Look-ups into the embedding layer requires passing a tensor. The incoming tensor itself can be multi-dimensional.
     # For every element in the tensor, the corresponding value (itself a tensor) is looked up.
@@ -40,16 +40,22 @@ if __name__ == '__main__':
     # `arange` returns a 1D tensor that has values in the range [`start`, `end``).
     # Logging.log(LogLevel.INFO, token_embedding_layer(torch.arange(end=6)))
 
-    Logging.log(LogLevel.INFO, token_embeddings_layer.weight.shape)
+    # Logging.log(LogLevel.INFO, f'Token embeddings layer shape: {token_embeddings_layer.weight.shape}')
 
     with open(file='./data/the-verdict.txt', encoding="utf-8") as f:
         raw_text = f.read()
 
-    input_arr = torch.zeros(8, 4, dtype=torch.int32)
+    # context_length is defined in terms of number of tokens; A batch is a group of rows, each of size context_length,
+    # that defines a larger block that is processed together.
+
+    batch_size, context_length = 8, 4
+    pos_embeddings_layer = torch.nn.Embedding(num_embeddings=context_length, embedding_dim=256)
+
+    input_arr = torch.zeros(batch_size, context_length, dtype=torch.int32)
     if raw_text:
         tokens = tokenizer.encode(raw_text)
         start_idx = 0
-        for row in range(8):
+        for row in range(batch_size):
             input_arr[row] = torch.tensor(tokens[start_idx : start_idx+4])
             start_idx += 4
 
@@ -57,3 +63,10 @@ if __name__ == '__main__':
 
     token_embeddings = token_embeddings_layer(input_arr)
     Logging.log(LogLevel.INFO, f'token_embeddings shape: {token_embeddings.shape}')
+
+    # arange because we want all tokens in a context to be grouped together. That way they can be added with token_embeddings to obtain the input_embeddings in the next step.
+    pos_embeddings = pos_embeddings_layer(torch.arange(context_length))
+    Logging.log(LogLevel.INFO, f'pos_embeddings shape: {pos_embeddings.shape}')
+
+    input_embeddings = token_embeddings + pos_embeddings
+    Logging.log(LogLevel.INFO, f'input_embeddings shape: {input_embeddings.shape}')

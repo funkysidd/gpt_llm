@@ -77,3 +77,16 @@
         * x' = transpose(T) * x, where transpose(T) is a `n x m` sized matrix.
         * Essentially, the act of transformation can ve viewed as transforming "every" component of the incoming vector
           weighed differently to compute the components in the new outgoing vector.
+  * GPT model from scratch:
+    * Layer normalization is applied to the activation output, not directly to the layer output.
+    * The vanishing gradients problem occurs during backpropogation when gradients become extremely small causing erlier
+    layers not to learn. This happens because gradients of activation functions are small to begin with, and repetitive
+    multiplication (chain rule) across layers causes them to become even smaller.
+    * Shortcut connections are alternative paths for gradients to flow to mitigate vanishing gradients. The inputs to a
+    layer are added to the output of a layer. In that way, if the actual output (after activation) is small enough,
+    adding the input causes essentially results in that layer being bypassed i.e., output == input.
+    * In the worst case scenario, the weights of the layer in the question represent a identity matrix; as opposed to
+    all zeros. The biases are also zeros.
+    * Assuming that the layer's output is `H(x) = F(x) + x`, the layer is trying to learn `F(x)`, or `H(x) - x`.
+  * torch.tensor([ [1] ]) is a 2 dimensionsal tensor. Its dimensions are (1, 1).
+  * torch.tensor([1, 2, 3]) is a 1 dimensionsal tensor. Its dimensions are 3.
