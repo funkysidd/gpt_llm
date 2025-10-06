@@ -35,3 +35,21 @@ def compute_accuracy_gpu(rank, model:torch.nn.Module, dataloader:torch.utils.dat
         total_examples += len(compare)
 
     return (correct / total_examples)
+
+def generate_text_simple(model, idx, max_new_tokens, context_length): 
+    for _ in range(max_new_tokens):
+        # Incoming idx may be artbitrarily large array of tokens; `-context_length` ensures that we only process the
+        # last `context_length` tokens. Not to mention `idx` keeps on growing till we have processed `max_new_tokens`.
+        # Also, if the incoming aray of tokens is smaller than `content_length`, it doesn't oveflow.
+        idx_cond = idx[:, -context_length:]
+        with torch.no_grad():
+            logits = model(idx_cond)
+
+        # `-1` indicates the last column. That last colums in an array of `vocab_size` elements. The softmax is computed
+        # on that array.
+        logits = logits[:, -1, :]
+        probas = torch.softmax(logits, dim=-1)
+        idx_next = torch.argmax(probas, dim=-1, keepdim=True)
+        idx = torch.cat((idx, idx_next), dim=1)
+
+    return idx

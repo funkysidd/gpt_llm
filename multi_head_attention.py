@@ -3,8 +3,8 @@ import torch
 from logger import Logging, LogLevel
 
 class MultiHeadAttention(torch.nn.Module):
-    def __init__(self, num_input_features:int, num_output_features:int, context_length:int, dropout:float,
-                 num_heads:int, qkv_bias=False):
+    def __init__(self, num_input_features:int, num_output_features:int, context_length:int, num_heads:int, 
+                 dropout:float, qkv_bias=False):
 
         super().__init__()
         assert (num_output_features % num_heads == 0), \
@@ -49,7 +49,8 @@ class MultiHeadAttention(torch.nn.Module):
 
         # In causal_atention, this was (1, 2); since there is an additional dimension here, that changed to (2, 3).
         attention_scores = queries @ keys.transpose(2, 3)
-        attention_scores.masked_fill_(self.mask, -torch.inf)
+        mask_bool = self.mask[:num_tokens, :num_tokens] # Adjusts the mask if num_tokens is smaller than content_length
+        attention_scores.masked_fill_(mask_bool, -torch.inf)
 
         # In causal_attention, we used `self.num_output_features` as opposed to `keys[-1]` which is 1 and not 2. That
         # is representative of `head_dim`, which is `self.output_feature_count // num_heads. Really, using `keys[-1]`
