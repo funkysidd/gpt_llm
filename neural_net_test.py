@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from neural_net import NeuralNetwork
-from neural_net_utils import compute_accuracy
+from gpt_utils import compute_accuracy
 from dataset import SampleDataset
 from logger import Logging, LogLevel
 

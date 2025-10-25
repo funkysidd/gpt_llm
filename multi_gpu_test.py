@@ -9,7 +9,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 
 from neural_net import NeuralNetwork
-from neural_net_utils import compute_accuracy, compute_accuracy_gpu
+from gpt_utils import compute_accuracy, compute_accuracy_gpu
 from dataset import SampleDataset
 from logger import Logging, LogLevel
 
