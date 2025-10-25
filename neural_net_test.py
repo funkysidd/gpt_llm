@@ -8,26 +8,22 @@ from gpt_utils import compute_accuracy
 from dataset import SampleDataset
 from logger import Logging, LogLevel
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Logging.set_log_level(LogLevel.INFO)
 
     # Global torch options
     torch.manual_seed(123)
     torch.set_printoptions(sci_mode=False)
 
-    X_train = torch.tensor([
-        [-1.2, 3.1],
-        [-0.9, 2.9],
-        [-0.5, 2.6],
-        [2.3, -1.1],
-        [2.7, -1.5]
-    ])
+    X_train = torch.tensor([[-1.2, 3.1], [-0.9, 2.9], [-0.5, 2.6], [2.3, -1.1], [2.7, -1.5]])
     y_train = torch.tensor([0, 0, 0, 1, 1])
 
-    X_test = torch.tensor([
-        [-0.8, 2.8],
-        [2.6, -1.6],
-    ])
+    X_test = torch.tensor(
+        [
+            [-0.8, 2.8],
+            [2.6, -1.6],
+        ]
+    )
     y_test = torch.tensor([0, 1])
 
     train_ds = SampleDataset(X_train, y_train)
@@ -45,7 +41,10 @@ if __name__ == '__main__':
     model = NeuralNetwork(input_features=2, output_features=2)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.5)
 
-    Logging.log(LogLevel.VERBOSE, f"Number of trainable params: {model.get_trainable_param_count()}")
+    Logging.log(
+        LogLevel.VERBOSE,
+        f"Number of trainable params: {model.get_trainable_param_count()}",
+    )
 
     num_epochs = 3
     for epoch in range(3):
@@ -61,12 +60,12 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-            Logging.log(LogLevel.INFO, "Epoch: {0:03d}/{1:03d}, batch: {2:03d}/{3:03d}, loss: {4:.08f}".format(
-                epoch+1,
-                num_epochs,
-                batch_idx,
-                len(train_loader),
-                loss))
+            Logging.log(
+                LogLevel.INFO,
+                "Epoch: {0:03d}/{1:03d}, batch: {2:03d}/{3:03d}, loss: {4:.08f}".format(
+                    epoch + 1, num_epochs, batch_idx, len(train_loader), loss
+                ),
+            )
 
     # Logging.log(LogLevel.INFO, "Evaluating model with training dataset")
     # with torch.no_grad():
@@ -78,5 +77,5 @@ if __name__ == '__main__':
     # print(f'Eval result: {y_train_val}, \nprobablities: {probablities}, \npredictions: {predictions},'
     #       f'\npredictions_alt: {predictions_alt}')
 
-    Logging.log(LogLevel.INFO, f'Accuracy (training): {compute_accuracy(model, train_loader)}')
-    Logging.log(LogLevel.INFO, f'Accuracy (testing): {compute_accuracy(model, test_loader)}')
+    Logging.log(LogLevel.INFO, f"Accuracy (training): {compute_accuracy(model, train_loader)}")
+    Logging.log(LogLevel.INFO, f"Accuracy (testing): {compute_accuracy(model, test_loader)}")

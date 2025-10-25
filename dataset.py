@@ -2,8 +2,9 @@ import torch
 
 from torch.utils.data import Dataset
 
+
 class SampleDataset(Dataset):
-    def __init__(self, features:torch.tensor, labels:torch.tensor):
+    def __init__(self, features: torch.tensor, labels: torch.tensor):
         self.features = features
         self.labels = labels
 

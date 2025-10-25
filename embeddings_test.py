@@ -3,7 +3,7 @@ import tiktoken
 
 from logger import Logging, LogLevel
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Logging.set_log_level(LogLevel.INFO)
     torch.manual_seed(123)
 
@@ -20,11 +20,11 @@ if __name__ == '__main__':
     # Logging.log(LogLevel.INFO, layers)
     # token_embedding_layer = layers[0]
 
-    tokenizer = tiktoken.encoding_for_model(model_name='gpt2')
+    tokenizer = tiktoken.encoding_for_model(model_name="gpt2")
     max_token_value = tokenizer.max_token_value
     max_tokens = max_token_value + 1
 
-    Logging.log(LogLevel.INFO, f'Maximum number of tokens: {max_tokens}')
+    Logging.log(LogLevel.INFO, f"Maximum number of tokens: {max_tokens}")
 
     token_embeddings_layer = torch.nn.Embedding(num_embeddings=max_tokens, embedding_dim=256)
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     # Logging.log(LogLevel.INFO, f'Token embeddings layer shape: {token_embeddings_layer.weight.shape}')
 
-    with open(file='./data/the-verdict.txt', encoding="utf-8") as f:
+    with open(file="./data/the-verdict.txt", encoding="utf-8") as f:
         raw_text = f.read()
 
     # context_length is defined in terms of number of tokens; A batch is a group of rows, each of size context_length,
@@ -56,17 +56,18 @@ if __name__ == '__main__':
         tokens = tokenizer.encode(raw_text)
         start_idx = 0
         for row in range(batch_size):
-            input_arr[row] = torch.tensor(tokens[start_idx : start_idx+4])
+            input_arr[row] = torch.tensor(tokens[start_idx : start_idx + 4])
             start_idx += 4
 
-    Logging.log(LogLevel.INFO, f'input_arr: {input_arr}')
+    Logging.log(LogLevel.INFO, f"input_arr: {input_arr}")
 
     token_embeddings = token_embeddings_layer(input_arr)
-    Logging.log(LogLevel.INFO, f'token_embeddings shape: {token_embeddings.shape}')
+    Logging.log(LogLevel.INFO, f"token_embeddings shape: {token_embeddings.shape}")
 
-    # arange because we want all tokens in a context to be grouped together. That way they can be added with token_embeddings to obtain the input_embeddings in the next step.
+    # arange because we want all tokens in a context to be grouped together. That way they can be added with
+    # token_embeddings to obtain the input_embeddings in the next step.
     pos_embeddings = pos_embeddings_layer(torch.arange(context_length))
-    Logging.log(LogLevel.INFO, f'pos_embeddings shape: {pos_embeddings.shape}')
+    Logging.log(LogLevel.INFO, f"pos_embeddings shape: {pos_embeddings.shape}")
 
     input_embeddings = token_embeddings + pos_embeddings
-    Logging.log(LogLevel.INFO, f'input_embeddings shape: {input_embeddings.shape}')
+    Logging.log(LogLevel.INFO, f"input_embeddings shape: {input_embeddings.shape}")

@@ -6,16 +6,14 @@ from layer_norm import LayerNorm
 from transformer_block import TransformerBlock
 from gpt2_config import config as gpt2_124m_config
 
+
 class GPTModel(torch.nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.tok_emb = torch.nn.Embedding(cfg["vocab_size"], cfg["emb_dim"])
         self.pos_emb = torch.nn.Embedding(cfg["context_length"], cfg["emb_dim"])
         self.drop_emb = torch.nn.Dropout(cfg["drop_rate"])
-        self.trf_blocks = torch.nn.Sequential(
-            *[TransformerBlock(cfg)
-              for _ in range(cfg["n_layers"])]
-        )
+        self.trf_blocks = torch.nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
 
         # NOTE: Really, all computations internally are on tensors of dimenion `emb_dim`.
 
@@ -39,11 +37,12 @@ class GPTModel(torch.nn.Module):
         logits = self.out_head(x)
         return logits
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     torch.manual_seed(123)
     Logging.set_log_level(LogLevel.INFO)
 
-    tokenizer = tiktoken.get_encoding('gpt2')
+    tokenizer = tiktoken.get_encoding("gpt2")
 
     txt1 = "Every effort moves you"
     txt2 = "Every day holds a"
@@ -55,7 +54,7 @@ if __name__ == '__main__':
     # Batch dimension is (2, 4). This is passed to the model.
     batch = torch.stack(batch, dim=0)
 
-    Logging.log(LogLevel.INFO, f'Input: {batch.shape}')
+    Logging.log(LogLevel.INFO, f"Input: {batch.shape}")
 
     model = GPTModel(gpt2_124m_config)
 
@@ -63,4 +62,4 @@ if __name__ == '__main__':
     # first `n-1` overlap with the input.
     logits = model(batch)
 
-    Logging.log(LogLevel.INFO, f'Output: {logits.shape}')
+    Logging.log(LogLevel.INFO, f"Output: {logits.shape}")

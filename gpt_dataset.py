@@ -2,6 +2,7 @@ import torch
 
 from torch.utils.data import Dataset
 
+
 class GPTDatasetV1(Dataset):
     def __init__(self, txt, tokenizer, max_length, stride):
         self.input_ids = []
@@ -11,8 +12,8 @@ class GPTDatasetV1(Dataset):
 
         for i in range(0, len(token_ids) - max_length, stride):
             # The target chunk is one off from the input chunk
-            input_chunk = token_ids[i:i + max_length]
-            target_chunk = token_ids[i + 1: i + max_length + 1]
+            input_chunk = token_ids[i : i + max_length]
+            target_chunk = token_ids[i + 1 : i + max_length + 1]
             self.input_ids.append(torch.tensor(input_chunk))
             self.target_ids.append(torch.tensor(target_chunk))
 

@@ -1,21 +1,23 @@
 from enum import Enum
 
+
 class LogLevel(Enum):
-    NONE    = 0
-    ERROR   = 1
+    NONE = 0
+    ERROR = 1
     WARNING = 2
-    INFO    = 3
+    INFO = 3
     VERBOSE = 4
+
 
 class Logging:
     log_level = LogLevel.NONE
 
     @staticmethod
-    def set_log_level(log_level:LogLevel):
+    def set_log_level(log_level: LogLevel):
         Logging.log_level = log_level
 
     @staticmethod
-    def log(log_level:LogLevel, text:str):
+    def log(log_level: LogLevel, text: str):
         match Logging.log_level:
             case LogLevel.ERROR:
                 match log_level:
@@ -46,6 +48,7 @@ class Logging:
                     case LogLevel.VERBOSE:
                         print(f"Log (V) : {text}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     Logging.set_log_level(LogLevel.INFO)
     Logging.log(LogLevel.INFO, "Hello, World!")

@@ -2,6 +2,7 @@ import torch
 
 from logger import Logging, LogLevel
 
+
 class LayerNorm(torch.nn.Module):
     def __init__(self, emb_dim):
         super().__init__()
@@ -11,16 +12,17 @@ class LayerNorm(torch.nn.Module):
 
     def forward(self, x):
         mean = x.mean(dim=-1, keepdim=True)
-        var = x.var(dim=-1, keepdim=True, unbiased=False) # `unbiased=False` uses n-1 for division, as opposed to n.
+        var = x.var(dim=-1, keepdim=True, unbiased=False)  # `unbiased=False` uses n-1 for division, as opposed to n.
         norm_x = (x - mean) / torch.sqrt(var + self.eps)
         return self.scale * norm_x + self.shift
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     torch.manual_seed(123)
     torch.set_printoptions(sci_mode=False)
     Logging.set_log_level(LogLevel.INFO)
 
-    batch = torch.rand(2, 5) # 5 being the emb_dim
+    batch = torch.rand(2, 5)  # 5 being the emb_dim
 
     # Left here for reference; mean_batch and var_batch are 0's and 1's as expected. The out_mean is 0's, but out_var
     # is not exactly 1's.
@@ -41,6 +43,6 @@ if __name__ == '__main__':
     out_mean = out.mean(dim=-1, keepdim=True)
     out_var = out.var(dim=-1, keepdim=True, unbiased=False)
 
-    Logging.log(LogLevel.INFO, f'out:\n{out}')
-    Logging.log(LogLevel.INFO, f'out_mean:\n{out_mean}')
-    Logging.log(LogLevel.INFO, f'out_var:\n{out_var}')
+    Logging.log(LogLevel.INFO, f"out:\n{out}")
+    Logging.log(LogLevel.INFO, f"out_mean:\n{out_mean}")
+    Logging.log(LogLevel.INFO, f"out_var:\n{out_var}")
