@@ -4,7 +4,7 @@ import tiktoken
 from logger import Logging, LogLevel
 from gpt_model import GPTModel
 from gpt_utils import generate_text_simple
-from gpt2_config import config as gpt2_124m_config
+from gpt2_configs import gpt2_base_config as gpt2_124m_config
 
 if __name__ == "__main__":
     torch.manual_seed(123)

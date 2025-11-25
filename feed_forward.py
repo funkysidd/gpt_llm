@@ -1,7 +1,5 @@
 import torch
 
-from logger import Logging, LogLevel
-from gpt2_config import config as gpt2_124m_config
 from gelu import GELU
 
 

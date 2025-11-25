@@ -90,7 +90,7 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, f"context_vectors (simple): {context_vectors_simple}")
 
     # The weights in the linear variant are stored are stored as transposes of the initially specified dimensions. In
-    # this case, the weights are stores as a 2x3 matrix, so they are transposed to retrieve the original 3x2 matrix.
+    # this case, the weights are stored as a 2x3 matrix, so they are transposed to retrieve the original 3x2 matrix.
     sa_simple = SelfAttention_Simple(
         3,
         2,

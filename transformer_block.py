@@ -4,7 +4,7 @@ from logger import Logging, LogLevel
 from multi_head_attention import MultiHeadAttention
 from feed_forward import FeedForward
 from layer_norm import LayerNorm
-from gpt2_config import config as gpt2_124m_config
+from gpt2_configs import gpt2_base_config as gpt2_124m_config
 
 
 class TransformerBlock(torch.nn.Module):

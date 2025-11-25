@@ -4,7 +4,7 @@ import tiktoken
 from logger import Logging, LogLevel
 from layer_norm import LayerNorm
 from transformer_block import TransformerBlock
-from gpt2_config import config as gpt2_124m_config
+from gpt2_configs import gpt2_base_config as gpt2_124m_config
 
 
 class GPTModel(torch.nn.Module):

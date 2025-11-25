@@ -90,3 +90,21 @@
     * Assuming that the layer's output is `H(x) = F(x) + x`, the layer is trying to learn `F(x)`, or `H(x) - x`.
   * torch.tensor([ [1] ]) is a 2 dimensionsal tensor. Its dimensions are (1, 1).
   * torch.tensor([1, 2, 3]) is a 1 dimensionsal tensor. Its dimensions are 3.
+
+  * Instruction fine tuning
+    * The Alpaca dataset has the following format,
+    ```
+      Below is an instruction that describes a task. Write a resopnse that appropriately completes the reqeust.
+
+      ### Instruction
+      Identify the correct spelling of the following word.
+
+      ### Input
+      Ocassion
+
+      ### Resposnse
+      The correct spelling is 'Occasion'.
+    ```
+    * Batching to similarly sized number of token is crucial to fine tuning. This is achieved my finding the largest
+    sized input, and padding all other inputs to the same size using end-of-text token.
+
