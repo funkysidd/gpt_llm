@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 
 from logger import Logging, LogLevel
 from gpt_dataset import GPTDatasetV1
+from lora import LinearWithLoRA
 
 
 def compute_accuracy(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader):
@@ -337,3 +338,10 @@ def load_weights_into_gpt(model, params):
     model.final_norm.scale = assign(model.final_norm.scale, params["g"])
     model.final_norm.shift = assign(model.final_norm.shift, params["b"])
     model.out_head.weight = assign(model.out_head.weight, params["wte"])
+
+def replace_linear_with_lora(model, rank, alpha):
+    for name, module in model.named_children():
+        if isinstance(module, torch.nn.Linear):
+            setattr(model, name, LinearWithLoRA(module, rank, alpha))
+        else:
+            replace_linear_with_lora(module, rank, alpha)

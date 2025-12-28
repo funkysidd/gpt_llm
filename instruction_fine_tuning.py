@@ -17,6 +17,7 @@ from gpt_utils import (
     load_weights_into_gpt,
     calc_loss_loader,
     train_model_simple,
+    replace_linear_with_lora,
 )
 
 
@@ -72,6 +73,11 @@ if __name__ == "__main__":
     parser.add_argument("output", help="Path to a file where the model weights are written.")
     parser.add_argument("--batch_size", "-b", help="The batch size in a dataloader.", type=int, default=4)
     parser.add_argument(
+        "--enable_lora", "-l", help="Use LORA for parameter efficient fine tuning.", type=bool, default=True
+    )
+    parser.add_argument("--lora_rank", "-lr", help="Rank used with LORA.", type=int, default=16)
+    parser.add_argument("--lora_alpha", "-la", help="Alpha used with LORA.", type=float, default=16)
+    parser.add_argument(
         "--max_io_length", "-m", help="The max size of inputs and outputs for instructions.", type=int, default=-1
     )
 
@@ -123,6 +129,21 @@ if __name__ == "__main__":
 
     Logging.log(LogLevel.INFO, "Loading pre-trained weights into model...")
     load_weights_into_gpt(model, params)
+
+    if args.enable_lora:
+        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        Logging.log(LogLevel.INFO, f"Total trainable parameters before: {total_params:,}")
+
+        for param in model.parameters():
+            param.requires_grad = False
+
+        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        Logging.log(LogLevel.INFO, f"Total trainable parameters after (locking): {total_params:,}")
+
+        replace_linear_with_lora(model, args.lora_rank, args.lora_alpha)
+
+        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        Logging.log(LogLevel.INFO, f"Total trainable parameters after (lora): {total_params:,}")
 
     Logging.log(LogLevel.INFO, f"Moving model to device: {device}...")
     model.to(device)
