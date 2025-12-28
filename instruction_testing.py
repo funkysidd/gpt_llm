@@ -10,17 +10,10 @@ from logger import Logging, LogLevel
 from gpt_model import GPTModel
 from instruction_dataset import InstructionDataset, format_input
 from gpt2_configs import GPT2Config, get_gpt2_config
-from gpt_download import load_gpt2
 from gpt_utils import (
-    custom_collate_function,
     generate_text,
-    generate_and_print_sample,
-    text_to_token_ids,
-    token_ids_to_text,
-    load_weights_into_gpt,
-    calc_loss_loader,
-    train_model_simple,
 )
+
 
 def load_database(file_path: str, max_io_length: int = None, truncate_size: int = None):
     dataset = []
@@ -31,14 +24,14 @@ def load_database(file_path: str, max_io_length: int = None, truncate_size: int 
     truncated_dataset = []
     if max_io_length is not None:
         for item in dataset:
-            if (len(item["input"]) <= max_io_length and len(item["output"]) <= max_io_length):
+            if len(item["input"]) <= max_io_length and len(item["output"]) <= max_io_length:
                 truncated_dataset.append(item)
     else:
         truncated_dataset = dataset
 
     if truncate_size is not None:
         truncated_dataset = truncated_dataset[:truncate_size]
-    
+
     dataset_size = len(truncated_dataset)
 
     Logging.log(LogLevel.INFO, f"Dataset size: {dataset_size}")
@@ -79,26 +72,30 @@ if __name__ == "__main__":
     model.eval()
 
     tokenizer = tiktoken.get_encoding("gpt2")
+
+    # Constants
     eos_id = tokenizer.encode("<|endoftext|>", allowed_special="all")[0]
+    max_new_tokens = 128
+    temperature = 1.0
+    top_k = 10
 
     while True:
         user_input = input("Enter a prompt: ")
-        if user_input.lower() in ["quit", "exit"]:
-            break 
+        if user_input.lower() in ["quit", "q", "exit"]:
+            break
 
-        entry = {
-            "instruction": user_input,
-            "input": "",
-        }
-
+        entry = {"instruction": user_input, "input": ""}
         start_context = format_input(entry)
-        decoded_text = generate_and_print_sample(model, tokenizer, device, start_context, eos_id)
-        
+
+        decoded_text = generate_text(
+            model, tokenizer, device, start_context, max_new_tokens, eos_id, temperature, top_k
+        )
+
         response_splitted = decoded_text.split("Response:")
         if len(response_splitted) > 1:
-            Logging.log(LogLevel.INFO, f"Response: \033[31m{response_splitted[1].strip()}\033[0m")
+            formmatted_response = response_splitted[1].strip()
+            Logging.log(LogLevel.INFO, f"Response: \033[31m{formmatted_response}\033[0m")
         else:
             Logging.log(LogLevel.WARNING, f"Invalid response: \033[97m{decoded_text}\033[0m")
 
     Logging.log(LogLevel.INFO, "Exiting...")
-    

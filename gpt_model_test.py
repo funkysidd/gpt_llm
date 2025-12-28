@@ -3,7 +3,7 @@ import tiktoken
 
 from logger import Logging, LogLevel
 from gpt_model import GPTModel
-from gpt_utils import generate_text_simple
+from gpt_utils import generate_tokens
 from gpt2_configs import gpt2_base_config as gpt2_124m_config
 
 if __name__ == "__main__":
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     Logging.log(LogLevel.VERBOSE, f"Batch: {batch}")
 
     model.eval()
-    out = generate_text_simple(
+    out = generate_tokens(
         model=model,
         tokens=batch,
         max_new_tokens=6,

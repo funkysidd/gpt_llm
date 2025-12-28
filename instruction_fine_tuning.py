@@ -14,13 +14,11 @@ from gpt2_configs import GPT2Config, get_gpt2_config
 from gpt_download import load_gpt2
 from gpt_utils import (
     custom_collate_function,
-    generate_text,
-    text_to_token_ids,
-    token_ids_to_text,
     load_weights_into_gpt,
     calc_loss_loader,
     train_model_simple,
 )
+
 
 def load_database(file_path: str, max_io_length: int = -1, truncate_size: int = -1):
     dataset = []
@@ -31,14 +29,14 @@ def load_database(file_path: str, max_io_length: int = -1, truncate_size: int = 
     truncated_dataset = []
     if max_io_length != -1:
         for item in dataset:
-            if (len(item["input"]) <= max_io_length and len(item["output"]) <= max_io_length):
+            if len(item["input"]) <= max_io_length and len(item["output"]) <= max_io_length:
                 truncated_dataset.append(item)
     else:
         truncated_dataset = dataset
 
     if truncate_size != -1:
         truncated_dataset = truncated_dataset[:truncate_size]
-    
+
     dataset_size = len(truncated_dataset)
 
     Logging.log(LogLevel.INFO, f"Dataset size: {dataset_size}")
@@ -52,30 +50,34 @@ def load_database(file_path: str, max_io_length: int = -1, truncate_size: int = 
 
     return training_list, testing_list, validation_list
 
+
 def save_model(model: GPTModel, optimizer: torch.optim.AdamW, file_path: str):
-    torch.save({
-                    "model_state_dict": model.state_dict(),
-                    "optimizer_state_dict": optimizer.state_dict(),
-                }, 
-                file_path)
+    torch.save(
+        {
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+        },
+        file_path,
+    )
 
 
 if __name__ == "__main__":
     torch.manual_seed(123)
     Logging.set_log_level(LogLevel.INFO)
-    
-    parser = argparse.ArgumentParser(description='A utility to fine tune a GPT2 class neural network using a instruction dataset.')
-    parser.add_argument('input', help='Path to a JSON file containing the instruction dataset.')
-    parser.add_argument('output', help='Path to a file where the model weights are written.')
-    parser.add_argument('--batch_size', "-b", help='The batch size in a dataloader.', type=int, default=4)
-    parser.add_argument('--max_io_length', "-m", help='The max size of inputs and outputs for instructions.', type=int, default=-1)
+
+    parser = argparse.ArgumentParser(
+        description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
+    )
+    parser.add_argument("input", help="Path to a JSON file containing the instruction dataset.")
+    parser.add_argument("output", help="Path to a file where the model weights are written.")
+    parser.add_argument("--batch_size", "-b", help="The batch size in a dataloader.", type=int, default=4)
+    parser.add_argument(
+        "--max_io_length", "-m", help="The max size of inputs and outputs for instructions.", type=int, default=-1
+    )
 
     args = parser.parse_args()
 
-    training_list, testing_list, validation_list = load_database(
-        file_path=args.input,
-        max_io_length=args.max_io_length
-    )
+    training_list, testing_list, validation_list = load_database(file_path=args.input, max_io_length=args.max_io_length)
 
     Logging.log(LogLevel.INFO, f"Training dataset size: {len(training_list)}")
     Logging.log(LogLevel.INFO, f"Testing dataset size: {len(testing_list)}")
@@ -146,6 +148,7 @@ if __name__ == "__main__":
     start_time = time.time()
     train_model_simple(
         model=model,
+        tokenizer=tiktoken.get_encoding("gpt2"),
         training_loader=training_loader,
         validation_loader=validation_loader,
         optimizer=optimizer,
@@ -153,7 +156,7 @@ if __name__ == "__main__":
         num_epochs=2,
         eval_freq=5,
         eval_iter=5,
-        start_context=start_context
+        start_context=start_context,
     )
     end_time = time.time()
     execution_time_minutes = (end_time - start_time) / 60
@@ -162,4 +165,3 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, f"Saving model and optimizer...")
     save_model(model, optimizer, file_path=args.output)
     Logging.log(LogLevel.INFO, f"... done")
-

@@ -1,5 +1,4 @@
 import torch
-import tiktoken
 import numpy as np
 
 from torch.utils.data import DataLoader
@@ -57,7 +56,8 @@ def token_ids_to_text(token_ids, tokenizer):
     return tokenizer.decode(flat.tolist())
 
 
-def generate_text_simple(model, tokens, max_new_tokens, context_length, eos_id=None):
+# @deprecated(reason="Deprecated in favor of generate_tokens().")
+def generate_tokens_simple(model, tokens, max_new_tokens, context_length, eos_id=None):
     for _ in range(max_new_tokens):
         # Incoming idx may be artbitrarily large array of tokens; `-context_length` ensures that we only process the
         # last `context_length` tokens. Not to mention `idx` keeps on growing till we have processed `max_new_tokens`.
@@ -72,7 +72,7 @@ def generate_text_simple(model, tokens, max_new_tokens, context_length, eos_id=N
         logits = logits[:, -1, :]
         probabilities = torch.softmax(logits, dim=-1)
         token_next = torch.argmax(probabilities, dim=-1, keepdim=True)
-        
+
         if token_next == eos_id:
             break
 
@@ -81,8 +81,17 @@ def generate_text_simple(model, tokens, max_new_tokens, context_length, eos_id=N
     return tokens
 
 
-# An advanced implemention of the generate_text_simple function above that uses top-k sampling and temperature scaling.
-def generate_text(model, tokens, max_new_tokens, context_length, temperature=0.0, top_k=None, eos_id=None):
+def generate_tokens(
+    model,
+    tokens,
+    max_new_tokens,
+    context_length,
+    temperature=0.0,
+    top_k=None,
+    eos_id=None,
+    callback=None,
+    callback_data: str = None,
+) -> torch.tensor:
     for _ in range(max_new_tokens):
         tokens_current = tokens[:, -context_length:]
         with torch.no_grad():
@@ -109,15 +118,19 @@ def generate_text(model, tokens, max_new_tokens, context_length, temperature=0.0
             break
 
         tokens = torch.cat((tokens, token_next), dim=1)
+        if callback != None:
+            callback(token_next, callback_data)
 
     return tokens
 
 
-def generate_and_print_sample(model, tokenizer, device, start_context, eos_id=None) -> str:
+def generate_text(
+    model, tokenizer, device, start_context, max_new_tokens=50, eos_id=None, temperature=0.0, top_k=0
+) -> str:
     model.eval()
     context_length = model.pos_emb.weight.shape[0]
-    encoded = text_to_token_ids(start_context, tokenizer).to(device)
-    token_ids = generate_text_simple(model=model, tokens=encoded, max_new_tokens=50, context_length=context_length, eos_id=eos_id)
+    tokens = text_to_token_ids(start_context, tokenizer).to(device)
+    token_ids = generate_tokens(model, tokens, max_new_tokens, context_length, temperature, top_k, eos_id)
     decoded_text = token_ids_to_text(token_ids, tokenizer)
     decoded_text = decoded_text.replace("\n", " ")
     model.train()
@@ -127,6 +140,7 @@ def generate_and_print_sample(model, tokenizer, device, start_context, eos_id=No
 
 def create_dataloader_v1(
     txt,
+    tokenizer,
     batch_size=4,
     max_length=256,
     stride=128,
@@ -134,7 +148,6 @@ def create_dataloader_v1(
     drop_last=True,
     num_workers=0,
 ):
-    tokenizer = tiktoken.get_encoding("gpt2")
     dataset = GPTDatasetV1(txt, tokenizer, max_length, stride)
     dataloader = DataLoader(
         dataset,
@@ -195,11 +208,19 @@ def evaluate_model(model, training_loader, validation_loader, device, eval_iter)
 
 
 def train_model_simple(
-    model, training_loader, validation_loader, optimizer, device, num_epochs, eval_freq, eval_iter, start_context
+    model,
+    tokenizer,
+    training_loader,
+    validation_loader,
+    optimizer,
+    device,
+    num_epochs,
+    eval_freq,
+    eval_iter,
+    start_context,
 ):
     training_losses, validation_losses, track_tokens_seen = [], [], []
     tokens_seen, global_step = 0, -1
-    tokenizer = tiktoken.get_encoding("gpt2")
 
     for epoch in range(num_epochs):
         model.train()
@@ -230,7 +251,7 @@ def train_model_simple(
                     f"Validation loss {validation_loss:.3f}",
                 )
 
-        decoded_text = generate_and_print_sample(model, tokenizer, device, start_context)
+        decoded_text = generate_text(model, tokenizer, device, start_context)
         Logging.log(LogLevel.INFO, decoded_text)
 
     return training_losses, validation_losses, track_tokens_seen

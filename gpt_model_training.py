@@ -4,10 +4,8 @@ import tiktoken
 from logger import Logging, LogLevel
 from gpt_model import GPTModel
 from gpt_utils import (
-    generate_text_simple,
-    generate_text,
+    generate_tokens,
     create_dataloader_v1,
-    calc_loss_loader,
     train_model_simple,
     text_to_token_ids,
     token_ids_to_text,
@@ -34,6 +32,7 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, "Creating training loader...")
     training_loader = create_dataloader_v1(
         training_text,
+        tokenizer=tiktoken.get_encoding("gpt2"),
         batch_size=2,
         max_length=gpt2_config["context_length"],
         stride=gpt2_config["context_length"],
@@ -45,6 +44,7 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, "Creating validation loader...")
     validation_loader = create_dataloader_v1(
         validation_text,
+        tokenizer=tiktoken.get_encoding("gpt2"),
         batch_size=2,
         max_length=gpt2_config["context_length"],
         stride=gpt2_config["context_length"],
@@ -75,6 +75,7 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, "Starting training...")
     train_model_simple(
         model=model,
+        tokenizer=tiktoken.get_encoding("gpt2"),
         training_loader=training_loader,
         validation_loader=validation_loader,
         optimizer=optimizer,
@@ -88,18 +89,7 @@ if __name__ == "__main__":
     model.eval()
 
     torch.manual_seed(123)
-    generated_tokens = generate_text_simple(
-        model=model,
-        tokens=text_to_token_ids("Every step moves you", tokenizer=tiktoken.get_encoding("gpt2")).to(device),
-        max_new_tokens=25,
-        context_length=model.pos_emb.weight.shape[0],
-    )
-    Logging.log(
-        LogLevel.INFO, f"{token_ids_to_text(token_ids=generated_tokens, tokenizer=tiktoken.get_encoding("gpt2"))}"
-    )
-
-    torch.manual_seed(123)
-    generated_tokens = generate_text(
+    generated_tokens = generate_tokens(
         model=model,
         tokens=text_to_token_ids("Every effort moves you", tokenizer=tiktoken.get_encoding("gpt2")).to(device),
         max_new_tokens=15,
