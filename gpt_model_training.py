@@ -100,4 +100,3 @@ if __name__ == "__main__":
     Logging.log(
         LogLevel.INFO, f"{token_ids_to_text(token_ids=generated_tokens, tokenizer=tiktoken.get_encoding("gpt2"))}"
     )
-    

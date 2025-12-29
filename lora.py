@@ -1,6 +1,7 @@
 import math
 import torch
 
+
 class LoRALayer(torch.nn.Module):
     def __init__(self, in_dim, out_dim, rank, alpha):
         super().__init__()
@@ -12,15 +13,13 @@ class LoRALayer(torch.nn.Module):
     def forward(self, x):
         x = self.alpha * (x @ self.A @ self.B)
         return x
-    
+
+
 class LinearWithLoRA(torch.nn.Module):
     def __init__(self, linear, rank, alpha):
         super().__init__()
         self.linear = linear
-        self.lora = LoRALayer(
-            linear.in_features, linear.out_features, rank, alpha
-        )
+        self.lora = LoRALayer(linear.in_features, linear.out_features, rank, alpha)
 
     def forward(self, x):
         return self.linear(x) + self.lora(x)
-    

@@ -339,6 +339,7 @@ def load_weights_into_gpt(model, params):
     model.final_norm.shift = assign(model.final_norm.shift, params["b"])
     model.out_head.weight = assign(model.out_head.weight, params["wte"])
 
+
 def replace_linear_with_lora(model, rank, alpha):
     for name, module in model.named_children():
         if isinstance(module, torch.nn.Linear):

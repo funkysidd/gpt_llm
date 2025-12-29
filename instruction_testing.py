@@ -13,18 +13,14 @@ from logger import Logging, LogLevel
 from gpt_model import GPTModel
 from instruction_dataset import InstructionDataset, format_input
 from gpt2_configs import GPT2Config, get_gpt2_config
-from gpt_utils import (
-    generate_text,
-    generate_tokens,
-    token_ids_to_text,
-    text_to_token_ids,
-    replace_linear_with_lora
-)
+from gpt_utils import generate_text, generate_tokens, token_ids_to_text, text_to_token_ids, replace_linear_with_lora
 
-class CallbackData():
+
+class CallbackData:
     def __init__(self, status: Status = None):
         self.streaming_output = []
         self.status = status
+
 
 def decode_tokens_and_print_text(token_next: torch.tensor, callback_data: CallbackData):
     # The incoming token could be formed of multiple words
@@ -77,9 +73,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
     )
-    parser.add_argument(
-        "--enable-lora", "-l", help="Use LORA tuned dataset.", action="store_true"
-    )
+    parser.add_argument("--enable-lora", "-l", help="Use LORA tuned dataset.", action="store_true")
 
     args = parser.parse_args()
 
@@ -112,7 +106,7 @@ if __name__ == "__main__":
 
     # Constants
     eos_id = tokenizer.encode("<|endoftext|>", allowed_special="all")[0]
-    max_new_tokens = 1024    
+    max_new_tokens = 1024
     temperature = 1.0
     top_k = 10
 
@@ -141,7 +135,7 @@ if __name__ == "__main__":
                 temperature,
                 top_k,
                 decode_tokens_and_print_text,
-                callback_data
+                callback_data,
             )
 
         decoded_text = "".join(callback_data.streaming_output)
