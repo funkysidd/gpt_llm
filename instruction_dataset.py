@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 ### The format_input function used in Chapter 7 is slightly different from this.
 def format_input(entry: dict):
     formatted_text = ""
-    has_input = entry["input"] != ""
+    has_input = entry['input'] != ""
     formatted_text = (
         "Below is an instruction that describes a task, paired with an input that provides further context. Write a "
         "response that appropriately completes the request.\n\n"
@@ -15,14 +15,14 @@ def format_input(entry: dict):
         else "Below is an instruction that describes a task. Write a response that appropriately completes the "
         "request.\n\n"
     )
-    formatted_text += f"### Instruction:\n{entry["instruction"]}\n\n"
-    formatted_text += f"### Input:\n{entry["input"]}\n\n" if has_input is True else ""
+    formatted_text += f"### Instruction:\n{entry['instruction']}\n\n"
+    formatted_text += f"### Input:\n{entry['input']}\n\n" if has_input is True else ""
 
     return formatted_text
 
 
 def format_entry(entry: dict):
-    formatted_text = format_input(entry) + f"### Response:\n{entry["output"]}\n"
+    formatted_text = format_input(entry) + f"### Response:\n{entry['output']}\n"
     return formatted_text
 
 

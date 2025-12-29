@@ -126,7 +126,7 @@ def generate_tokens(
 
 
 def generate_text(
-    model, tokenizer, device, start_context, max_new_tokens=50, eos_id=None, temperature=0.0, top_k=0
+    model, tokenizer, device, start_context, max_new_tokens=50, eos_id=None, temperature=0.0, top_k=None
 ) -> str:
     model.eval()
     context_length = model.pos_emb.weight.shape[0]
