@@ -1,4 +1,5 @@
 from enum import Enum
+from rich.console import Console
 
 
 class LogLevel(Enum):
@@ -11,6 +12,7 @@ class LogLevel(Enum):
 
 class Logging:
     log_level = LogLevel.NONE
+    console = Console()
 
     @staticmethod
     def set_log_level(log_level: LogLevel):
@@ -22,31 +24,31 @@ class Logging:
             case LogLevel.ERROR:
                 match log_level:
                     case LogLevel.ERROR:
-                        print(f"Log (E) : {text}")
+                        Logging.console.log(f"(E) : {text}", style="red")
             case LogLevel.WARNING:
                 match log_level:
                     case LogLevel.ERROR:
-                        print(f"Log (E) : {text}")
+                        Logging.console.log(f"(E) : {text}", style="red")
                     case LogLevel.WARNING:
-                        print(f"Log (W) : {text}")
+                        Logging.console.log(f"(W) : {text}", style="yellow")
             case LogLevel.INFO:
                 match log_level:
                     case LogLevel.ERROR:
-                        print(f"Log (E) : {text}")
+                        Logging.console.log(f"(E) : {text}", style="red")
                     case LogLevel.WARNING:
-                        print(f"Log (W) : {text}")
+                        Logging.console.log(f"(W) : {text}", style="yellow")
                     case LogLevel.INFO:
-                        print(f"Log (I) : {text}")
+                        Logging.console.log(f"(I) : {text}")
             case LogLevel.VERBOSE:
                 match log_level:
                     case LogLevel.ERROR:
-                        print(f"Log (E) : {text}")
+                        Logging.console.log(f"(E) : {text}", style="red")
                     case LogLevel.WARNING:
-                        print(f"Log (W) : {text}")
+                        Logging.console.log(f"(W) : {text}", style="yellow")
                     case LogLevel.INFO:
-                        print(f"Log (I) : {text}")
+                        Logging.console.log(f"(I) : {text}")
                     case LogLevel.VERBOSE:
-                        print(f"Log (V) : {text}")
+                        Logging.console.log(f"(V) : {text}", style="grey37")
 
 
 if __name__ == "__main__":

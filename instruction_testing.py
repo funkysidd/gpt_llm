@@ -5,6 +5,7 @@ import tiktoken
 import argparse
 
 from functools import partial
+from rich.console import Console
 from torch.utils.data import DataLoader
 
 from logger import Logging, LogLevel
@@ -51,6 +52,7 @@ def load_database(file_path: str, max_io_length: int = None, truncate_size: int 
 if __name__ == "__main__":
     torch.manual_seed(123)
     Logging.set_log_level(LogLevel.INFO)
+    console = Console()
 
     parser = argparse.ArgumentParser(
         description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
@@ -94,6 +96,7 @@ if __name__ == "__main__":
     temperature = 1.0
     top_k = 10
 
+    console.print("Ready to go :tada:", style="bold green", emoji=True)
     while True:
         user_input = input("Enter a prompt: ")
         if user_input.lower() in ["quit", "q", "exit"]:
@@ -109,8 +112,9 @@ if __name__ == "__main__":
         response_splitted = decoded_text.split("Response:")
         if len(response_splitted) > 1:
             formmatted_response = response_splitted[1].strip()
-            Logging.log(LogLevel.INFO, f"Response: \033[31m{formmatted_response}\033[0m")
+            console.print(f"Response: {formmatted_response}", style="grey70")
         else:
-            Logging.log(LogLevel.WARNING, f"Invalid response: \033[97m{decoded_text}\033[0m")
+            console.print(f"Invalid Response: {decoded_text}", style="orange1")
 
+    console.print("Bye :wave:", style="bold green", emoji=True)
     Logging.log(LogLevel.INFO, "Exiting...")
