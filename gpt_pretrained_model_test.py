@@ -64,9 +64,9 @@ if __name__ == "__main__":
         tokens=text_to_token_ids(test_str, tokenizer=tiktoken.get_encoding("gpt2")).to(device),
         max_new_tokens=256,
         context_length=model.pos_emb.weight.shape[0],
+        eos_id=tiktoken.get_encoding("gpt2").encode("<|endoftext|>", allowed_special="all")[0],
         top_k=10,
         temperature=1.0,
-        eos_id=tiktoken.get_encoding("gpt2").encode("<|endoftext|>", allowed_special="all")[0],
         callback=decode_tokens_and_print_text,
         callback_data=streaming_output,
     )

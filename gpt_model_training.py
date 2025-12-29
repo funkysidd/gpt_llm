@@ -100,11 +100,4 @@ if __name__ == "__main__":
     Logging.log(
         LogLevel.INFO, f"{token_ids_to_text(token_ids=generated_tokens, tokenizer=tiktoken.get_encoding("gpt2"))}"
     )
-
-    # model.eval()
-    # with torch.no_grad():
-    #     training_loss = calc_loss_loader(model=model, data_loader=training_loader, device=device)
-    #     validation_loss = calc_loss_loader(model=model, data_loader=validation_loader, device=device)
-
-    # Logging.log(LogLevel.INFO, f"Training loss: {training_loss}")
-    # Logging.log(LogLevel.INFO, f"Validation loss: {validation_loss}")
+    

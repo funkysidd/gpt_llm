@@ -87,9 +87,9 @@ def generate_tokens(
     tokens,
     max_new_tokens,
     context_length,
+    eos_id=None,
     temperature=0.0,
     top_k=None,
-    eos_id=None,
     callback=None,
     callback_data: str = None,
 ) -> torch.tensor:
@@ -131,7 +131,7 @@ def generate_text(
     model.eval()
     context_length = model.pos_emb.weight.shape[0]
     tokens = text_to_token_ids(start_context, tokenizer).to(device)
-    token_ids = generate_tokens(model, tokens, max_new_tokens, context_length, temperature, top_k, eos_id)
+    token_ids = generate_tokens(model, tokens, max_new_tokens, context_length, eos_id, temperature, top_k)
     decoded_text = token_ids_to_text(token_ids, tokenizer)
     decoded_text = decoded_text.replace("\n", " ")
     model.train()
