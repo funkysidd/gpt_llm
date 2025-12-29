@@ -71,14 +71,14 @@ if __name__ == "__main__":
     )
     parser.add_argument("input", help="Path to a JSON file containing the instruction dataset.")
     parser.add_argument("output", help="Path to a file where the model weights are written.")
-    parser.add_argument("--batch_size", "-b", help="The batch size in a dataloader.", type=int, default=4)
+    parser.add_argument("--batch-size", "-b", help="The batch size in a dataloader.", type=int, default=4)
     parser.add_argument(
-        "--enable_lora", "-l", help="Use LORA for parameter efficient fine tuning.", type=bool, default=True
+        "--enable-lora", "-l", help="Use LORA for parameter efficient fine tuning.", action="store_true"
     )
-    parser.add_argument("--lora_rank", "-lr", help="Rank used with LORA.", type=int, default=16)
-    parser.add_argument("--lora_alpha", "-la", help="Alpha used with LORA.", type=float, default=16)
+    parser.add_argument("--lora-rank", "-lr", help="Rank used with LORA.", type=int, default=16)
+    parser.add_argument("--lora-alpha", "-la", help="Alpha used with LORA.", type=float, default=16)
     parser.add_argument(
-        "--max_io_length", "-m", help="The max size of inputs and outputs for instructions.", type=int, default=-1
+        "--max-io-length", "-m", help="The max size of inputs and outputs for instructions.", type=int, default=-1
     )
 
     args = parser.parse_args()

@@ -56,7 +56,7 @@ if __name__ == "__main__":
         description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
     )
     parser.add_argument(
-        "--enable_lora", "-l", help="Use LORA tuned dataset.", type=bool, default=True
+        "--enable-lora", "-l", help="Use LORA tuned dataset.", action="store_true"
     )
 
     args = parser.parse_args()
