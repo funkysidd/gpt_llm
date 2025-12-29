@@ -6,6 +6,7 @@ import argparse
 
 from functools import partial
 from rich.console import Console
+from rich.status import Status
 from torch.utils.data import DataLoader
 
 from logger import Logging, LogLevel
@@ -14,8 +15,27 @@ from instruction_dataset import InstructionDataset, format_input
 from gpt2_configs import GPT2Config, get_gpt2_config
 from gpt_utils import (
     generate_text,
+    generate_tokens,
+    token_ids_to_text,
+    text_to_token_ids,
     replace_linear_with_lora
 )
+
+class CallbackData():
+    def __init__(self, status: Status = None):
+        self.streaming_output = []
+        self.status = status
+
+def decode_tokens_and_print_text(token_next: torch.tensor, callback_data: CallbackData):
+    # The incoming token could be formed of multiple words
+    output = token_ids_to_text(token_ids=token_next, tokenizer=tiktoken.get_encoding("gpt2"))
+    callback_data.streaming_output += output
+    decoded_text = "".join(callback_data.streaming_output)
+
+    response_splitted = decoded_text.split("Response:")
+    if len(response_splitted) > 1:
+        formatted_response = response_splitted[1].strip()
+        callback_data.status.update(f"{formatted_response}")
 
 
 def load_database(file_path: str, max_io_length: int = None, truncate_size: int = None):
@@ -92,9 +112,11 @@ if __name__ == "__main__":
 
     # Constants
     eos_id = tokenizer.encode("<|endoftext|>", allowed_special="all")[0]
-    max_new_tokens = 256
+    max_new_tokens = 1024    
     temperature = 1.0
     top_k = 10
+
+    callback_data = CallbackData()
 
     console.print("Ready to go :tada:", style="bold green", emoji=True)
     while True:
@@ -105,16 +127,30 @@ if __name__ == "__main__":
         entry = {"instruction": user_input, "input": ""}
         start_context = format_input(entry)
 
-        decoded_text = generate_text(
-            model, tokenizer, device, start_context, max_new_tokens, eos_id, temperature, top_k
-        )
+        callback_data.streaming_output.clear()
 
+        with console.status("Generating...") as status:
+            callback_data.status = status
+            tokens = text_to_token_ids(start_context, tokenizer).to(device)
+            generate_tokens(
+                model,
+                tokens,
+                max_new_tokens,
+                model.pos_emb.weight.shape[0],
+                eos_id,
+                temperature,
+                top_k,
+                decode_tokens_and_print_text,
+                callback_data
+            )
+
+        decoded_text = "".join(callback_data.streaming_output)
         response_splitted = decoded_text.split("Response:")
         if len(response_splitted) > 1:
-            formmatted_response = response_splitted[1].strip()
-            console.print(f"Response: {formmatted_response}", style="grey70")
+            formatted_response = response_splitted[1].strip()
+            console.print(f"{formatted_response}", style="grey70")
         else:
-            console.print(f"Invalid Response: {decoded_text}", style="orange1")
+            console.print(f"{decoded_text}", style="orange1")
 
     console.print("Bye :wave:", style="bold green", emoji=True)
     Logging.log(LogLevel.INFO, "Exiting...")
