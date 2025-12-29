@@ -71,7 +71,7 @@ if __name__ == "__main__":
     console = Console()
 
     parser = argparse.ArgumentParser(
-        description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
+        description="A utility to test a GPT2 class neural network trained on an instruction dataset."
     )
     parser.add_argument("--enable-lora", "-l", help="Use LORA tuned dataset.", action="store_true")
 
