@@ -2,6 +2,7 @@ import torch
 import json
 import time
 import tiktoken
+import argparse
 
 from functools import partial
 from torch.utils.data import DataLoader
@@ -12,6 +13,7 @@ from instruction_dataset import InstructionDataset, format_input
 from gpt2_configs import GPT2Config, get_gpt2_config
 from gpt_utils import (
     generate_text,
+    replace_linear_with_lora
 )
 
 
@@ -50,6 +52,15 @@ if __name__ == "__main__":
     torch.manual_seed(123)
     Logging.set_log_level(LogLevel.INFO)
 
+    parser = argparse.ArgumentParser(
+        description="A utility to fine tune a GPT2 class neural network using a instruction dataset."
+    )
+    parser.add_argument(
+        "--enable_lora", "-l", help="Use LORA tuned dataset.", type=bool, default=True
+    )
+
+    args = parser.parse_args()
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     Logging.log(LogLevel.INFO, f"Device: {device}")
 
@@ -59,12 +70,16 @@ if __name__ == "__main__":
     Logging.log(LogLevel.INFO, "Creating model...")
     model = GPTModel(gpt2_config)
 
+    instruction_fine_tuning_path = "./datasets/alpaca_cleaned_fine_tuned.pth"
+    if args.enable_lora:
+        Logging.log(LogLevel.INFO, "Replacing linear modules with LORA...")
+        instruction_fine_tuning_path = "./datasets/alpaca_cleaned_fine_tuned_lora.pth"
+        replace_linear_with_lora(model, 16, 16)
+
     Logging.log(LogLevel.INFO, f"Moving model to device: {device}...")
     model.to(device)
 
-    instruction_fine_tuning_path = "./datasets/fine_tuned_alpaca_cleaned.pth"
     Logging.log(LogLevel.INFO, f"Reading pre-trained weights from file: {instruction_fine_tuning_path}")
-
     checkpoint = torch.load(instruction_fine_tuning_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
 
@@ -75,7 +90,7 @@ if __name__ == "__main__":
 
     # Constants
     eos_id = tokenizer.encode("<|endoftext|>", allowed_special="all")[0]
-    max_new_tokens = 128
+    max_new_tokens = 256
     temperature = 1.0
     top_k = 10
 
