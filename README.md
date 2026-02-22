@@ -11,10 +11,10 @@ See `requirements.txt` for using `instruction_testing.py`.
 The requirements can be installed by using,
 
 ```python
-python3 -m pip install
+python3 -m pip install -r requirements.txt
 ```
 
-Additioanally, download the following weights file and place it within `datasets` directory relative to the `README.md`.
+Additionally, download the following weights file and place it within `datasets` directory relative to the `README.md`.
 
 @todo:
 
