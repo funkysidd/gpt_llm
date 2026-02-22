@@ -1,0 +1,9 @@
+numpy
+torch
+tiktoken
+rich
+
+# The following dependencies are not required when using `instruction_testing.py`.
+#tensorflow
+#requests
+#tqdm
