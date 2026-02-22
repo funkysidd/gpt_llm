@@ -1,7 +1,7 @@
 # GPT LLM
 
 A GPT-2 class LLM implementation based on Sebastian Raschaka's Build a Large Language Model (From Scratch) [1]. The sole
-intent is to understand the LLM architecture and build a functional implementation from scratch.
+intent was to understand the LLM architecture and build a functional implementation from scratch.
 
 The model was was initialized with the 355M weights from OpenAI [2], and instruction fine tuned using the
 AlpacaDataCleaned dataset [3].
@@ -16,9 +16,11 @@ The requirements can be installed by using,
 python3 -m pip install -r requirements.txt
 ```
 
-Additionally, download the following weights file and place it within `datasets` directory relative to the `README.md`.
+Additionally,
 
-@todo:
+1. Download the weights file from the Google Drive [link](https://drive.google.com/file/d/1O3dYk_9_XyTnys-2AMIIc8RDvk_6XE2n/view?usp=drive_link)
+2. Place it within a `datasets` directory relative to the `README.md`.
+
 
 # Usage
 
