@@ -1,8 +1,10 @@
 # GPT LLM
 
-A GPT2 class LLM implementation based on Sebastian Raschaka's Build a Large Language Model (From Scratch) [1].
+A GPT-2 class LLM implementation based on Sebastian Raschaka's Build a Large Language Model (From Scratch) [1]. The sole
+intent is to understand the LLM architecture and build a functional implementation from scratch.
 
-The sole intent is to understand the LLM architecture and build a functional implementation from scratch.
+The model was was initialized with the 355M weights from OpenAI [2], and instruction fine tuned using the
+AlpacaDataCleaned dataset [3].
 
 # Requirements
 
@@ -31,3 +33,6 @@ To exit the LLM, type `q`, `quit`, or `exit` on the prompt.
 # References
 
 1. [Build a Large Language Model (From Scratch)](https://www.manning.com/books/build-a-large-language-model-from-scratch)
+2. [GPT-2](https://github.com/openai/gpt-2/tree/master)
+3. [AlpacaDataCleaned](https://github.com/gururise/AlpacaDataCleaned/tree/main)
+
