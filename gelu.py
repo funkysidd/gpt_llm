@@ -1,4 +1,4 @@
-# Gausssian error linear unit
+# Gaussian error linear unit
 
 import torch
 

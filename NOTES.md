@@ -3,13 +3,13 @@
 ## Python:
 
 * Raw strings i.e., `r""` are treated as-is. In other words, escape sequences like `\n` or `\t` will not be expanded.
-  The only exception is a backslash, `\`, which still needs to be backslashed to be interprted correctly i.e., `\\`.
+  The only exception is a backslash, `\`, which still needs to be backslashed to be interpreted correctly i.e., `\\`.
 * When using regular expression for splitting, the `()` can be used to capture the separator itself.
 * In `re.split(r'([\.,:;\?_!]|--|\s)', "Hello, World. I am alive?")`, all separators are enclosed within `()`. Also,
-  multiple separators are separated using `|`. Punctuations are grouped inside `[]` that signifies on one of.  Backslash
-  befor `?` and `.` are possibly not required, but it doesn't hurts.
-* In `re.sub(r'\s+([,.?!"()\'])', r'\1', text)`, we are essentially replacing the occurence ` ;` with `;`. The `\1` is a
-  reference to the first capture group.  The replacement is necessary because in its absence we will get teh text `Hello
+  multiple separators are separated using `|`. Punctuations are grouped inside `[]` that signifies one of. Backslash
+  before `?` and `.` are possibly not required, but it doesn't hurt.
+* In `re.sub(r'\s+([,.?!"()\'])', r'\1', text)`, we are essentially replacing the occurrence ` ;` with `;`. The `\1` is a
+  reference to the first capture group.  The replacement is necessary because in its absence we will get the text `Hello
   World !` as opposed to `Hello World!`.
 
 
@@ -75,11 +75,11 @@
       * Transforming a vector is achieved as,
         * x' = x * T, where T is a `m x n` sized matrix, or
         * x' = transpose(T) * x, where transpose(T) is a `n x m` sized matrix.
-        * Essentially, the act of transformation can ve viewed as transforming "every" component of the incoming vector
+        * Essentially, the act of transformation can be viewed as transforming "every" component of the incoming vector
           weighed differently to compute the components in the new outgoing vector.
   * GPT model from scratch:
     * Layer normalization is applied to the activation output, not directly to the layer output.
-    * The vanishing gradients problem occurs during backpropogation when gradients become extremely small causing erlier
+    * The vanishing gradients problem occurs during backpropagation when gradients become extremely small causing earlier
     layers not to learn. This happens because gradients of activation functions are small to begin with, and repetitive
     multiplication (chain rule) across layers causes them to become even smaller.
     * Shortcut connections are alternative paths for gradients to flow to mitigate vanishing gradients. The inputs to a
@@ -94,7 +94,7 @@
   * Instruction fine tuning
     * The Alpaca dataset has the following format,
     ```
-      Below is an instruction that describes a task. Write a resopnse that appropriately completes the reqeust.
+      Below is an instruction that describes a task. Write a response that appropriately completes the request.
 
       ### Instruction
       Identify the correct spelling of the following word.
@@ -102,9 +102,9 @@
       ### Input
       Ocassion
 
-      ### Resposnse
+      ### Response
       The correct spelling is 'Occasion'.
     ```
-    * Batching to similarly sized number of token is crucial to fine tuning. This is achieved my finding the largest
+    * Batching to similarly sized number of token is crucial to fine tuning. This is achieved by finding the largest
     sized input, and padding all other inputs to the same size using end-of-text token.
 

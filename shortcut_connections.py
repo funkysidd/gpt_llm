@@ -45,7 +45,7 @@ if __name__ == "__main__":
     Logging.set_log_level(LogLevel.INFO)
 
     # The last layer transforms the incoming tensor from number of dimensions 3 to 1, so we need to be exact in
-    # specifying the resulting tensor dimension i.e., (1, 1) as oposed to simply 1.
+    # specifying the resulting tensor dimension i.e., (1, 1) as opposed to simply 1.
     sizes = [3, 3, 3, 3, 3, 1]
     x = torch.tensor([[1.0, 0.0, -1.0]])  # Dimension: (1, 3)
     target = torch.tensor([[0.0]])  # Dimension: (1, 1)

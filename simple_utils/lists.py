@@ -9,7 +9,7 @@ def deque_test():
     print(f"Popped left: {fruits.popleft()}")
     print(f"Popped right: {fruits.pop()}")
 
-    print(f"Remaining fruits: {[fruit for fruit in fruits]}")  # fruits is of type deque; this convers it into a list.
+    print(f"Remaining fruits: {[fruit for fruit in fruits]}")  # fruits is of type deque; this converts it into a list.
 
 
 def comprehension_test():
